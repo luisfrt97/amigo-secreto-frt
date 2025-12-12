@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Amigo Secreto FRT</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0b3c5d;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .box {
+      background: #1c6ea4;
+      padding: 30px;
+      border-radius: 10px;
+      text-align: center;
+      width: 360px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+    h2 {
+      margin-top: 0;
+    }
+    button {
+      padding: 12px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      background: #f2b705;
+      margin-top: 15px;
+      width: 100%;
+    }
+    button:hover {
+      background: #f29f05;
+    }
+    .resultado {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+    select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 5px;
+      border: none;
+      color: #000;        /* TEXTO VISIBLE */
+      background: #fff;   /* FONDO BLANCO */
+      font-size: 15px;
+    }
+    .info {
+      margin-top: 10px;
+      font-size: 14px;
+      opacity: 0.9;
+    }
+  </style>
+</head>
+<body>
+
+<div class="box">
+  <h2>🎁 Amigo Secreto FRT</h2>
+
+  <label for="persona">Selecciona tu nombre:</label>
+  <select id="persona"></select>
+
+  <button onclick="sortear()">Sortear mi amigo secreto</button>
+
+  <div class="info">
+    📅 Fecha oficial del sorteo: <b>23 de diciembre de 2025</b>
+  </div>
+
+  <div class="resultado" id="resultado"></div>
+</div>
+
+<script>
+  const nombres = [
+    "Diego Nielsen",
+    "Maria Jose Egana",
+    "Jorge Egana",
+    "Christian Egana",
+    "Hans Wiedeman",
+    "JeanPierre Lajehanniere",
+    "Luis Nunez"
+  ];
+
+  const select = document.getElementById("persona");
+  const resultadoDiv = document.getElementById("resultado");
+
+  nombres.forEach(nombre => {
+    const option = document.createElement("option");
+    option.value = nombre;
+    option.textContent = nombre;
+    select.appendChild(option);
+  });
+
+  let asignaciones = JSON.parse(localStorage.getItem("amigoSecretoFRT")) || {};
+
+  function sortear() {
+    const yo = select.value;
+
+    if (!yo) {
+      resultadoDiv.textContent = "Selecciona tu nombre primero";
+      return;
+    }
+
+    if (asignaciones[yo]) {
+      resultadoDiv.innerHTML = "🎁 Tu amigo secreto es:<br>" + asignaciones[yo];
+      return;
+    }
+
+    const usados = Object.values(asignaciones);
+
+    const disponibles = nombres.filter(n =>
+      n !== yo && !usados.includes(n)
+    );
+
+    if (disponibles.length === 0) {
+      resultadoDiv.textContent = "⚠️ Ya no quedan nombres disponibles";
+      return;
+    }
+
+    const elegido = disponibles[Math.floor(Math.random() * disponibles.length)];
+    asignaciones[yo] = elegido;
+
+    localStorage.setItem("amigoSecretoFRT", JSON.stringify(asignaciones));
+
+    resultadoDiv.innerHTML = "🎉 Tu amigo secreto es:<br>" + elegido;
+  }
+</script>
+
+</body>
+</html>
